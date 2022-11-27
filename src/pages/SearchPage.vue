@@ -1,5 +1,5 @@
 <template>
-<main>Home Page</main>
+<main>Search Page</main>
 </template>
 
 <script setup>
