@@ -9,9 +9,8 @@ export default createStore({
         image: '',
         summary: '',
       },
-      searchedRecipes: {
-
-      }
+      searchedRecipes: {},
+      storedRecipes: {},
     }
   },
   getters: {
@@ -21,8 +20,9 @@ export default createStore({
   },
   actions: {
     async getRecipes(context, payload) {
-      // const api = '?apiKey=42f5299519244e28bfdda5914b136733';
-      const api = '?apiKey=1f0c11959ff6405eb834f3da2290dcb5';
+      const api = '?apiKey=42f5299519244e28bfdda5914b136733';
+      // const api = '?apiKey=1f0c11959ff6405eb834f3da2290dcb5';
+      // const api = '?apiKey=8bc869e5826a40c79d356abc97741cd4';
       let url ='https://api.spoonacular.com/recipes/';
       let type = payload.type
       let fullUrl = url + type + api
@@ -65,6 +65,21 @@ export default createStore({
 
       console.log(fullUrl);
       console.log(context.state.searchedRecipes);
+    },
+    async getRecipeInfo(context, payload) {
+      // const api = '?apiKey=42f5299519244e28bfdda5914b136733';
+      const api = '?apiKey=1f0c11959ff6405eb834f3da2290dcb5';
+      let url =`https://api.spoonacular.com/recipes/${payload.id}/information`;
+
+      let response = await fetch(url + api);
+
+      const responseData = await response.json();
+      let data = await responseData;
+    
+      console.log(data.id)
+      // console.log(fullUrl);
+      context.state.storedRecipes[data.id] = data;
+      console.log(context.state.storedRecipes)
     },
   },
   modules: {

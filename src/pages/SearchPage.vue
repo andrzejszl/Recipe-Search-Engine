@@ -69,8 +69,8 @@
         </form>
     </base-card>
     <base-card v-if="store.state.searchedRecipes.title" :title="store.state.searchedRecipes.title" :image="store.state.searchedRecipes.image" :summary="store.state.searchedRecipes.summary"></base-card>
-    <ul v-if="store.state.searchedRecipes" >
-        <li><base-card v-for="recipe in store.state.searchedRecipes" :key="recipe.id" type="mini" :title="recipe.title" :image="recipe.image"></base-card></li>
+    <ul v-if="store.state.searchedRecipes" ref="results">
+        <li><router-link :to="`/search/${recipe.id}`" v-for="recipe in store.state.searchedRecipes" :key="recipe.id"><base-card type="mini" :title="recipe.title" :image="recipe.image" :id="recipe.id"></base-card></router-link></li>
     </ul>
     
 </main>
@@ -82,6 +82,7 @@ import { useStore } from 'vuex';
 const store = useStore()
 
 const searchPhrase = ref()
+const results = ref()
 
 const diets = reactive({
     vegetarian: false,
@@ -94,12 +95,14 @@ const diets = reactive({
 const cuisine = ref()
 
 function sendPhraseRequest() {
+    results.value.scrollIntoView({behavior: "smooth"});
     store.dispatch('getRecipes', {
     query: searchPhrase.value,
     type: 'complexSearch'
     })
 }
 function sendAdvancedRequest() {
+    results.value.scrollIntoView({behavior: "smooth"});
     let filteredDiet = ''
     for (let diet in diets) {
         if (diets[diet] === true) filteredDiet += diet + ','
@@ -113,6 +116,10 @@ function sendAdvancedRequest() {
 </script>
 
 <style lang="scss" scoped>
+a:-webkit-any-link {
+    color: black;
+    text-decoration: none;
+}
 main {
     min-height: calc(100vh - 100px);
     background-color: #434242;

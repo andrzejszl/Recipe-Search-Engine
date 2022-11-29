@@ -3,9 +3,10 @@
         <div class="title">{{ title }}</div>
         <img :src="image" alt="" class="image">
         <div class="summary" v-html="summary"></div>
+        <base-button link :to="`/search/${props.id}`">View Recipe</base-button>
     </div>
     <div class="card-mini" v-else-if="props.type === 'mini'">
-        <div class="title">{{ title }}</div>
+        <h2 class="title">{{ title }}</h2>
         <img :src="image" alt="" class="image">
     </div>
     <div class="card" v-else>
@@ -19,7 +20,7 @@ const props = defineProps({
     title: String,
     image: String,
     summary: String,
-    id: String,
+    id: Number,
 })
 
 
@@ -44,7 +45,6 @@ const props = defineProps({
     }
     img {
         width: 400px;
-        // min-height: 200px;
         margin: 10px auto;
         border-radius: 10px;
     }
@@ -58,6 +58,7 @@ const props = defineProps({
         }
     }
 }
+
 .card-mini {
     cursor: pointer;
     display: flex;
@@ -76,16 +77,11 @@ const props = defineProps({
         transform: scale(1.1);
     }
     .title {
-        font-size: 2rem;
-        // font-weight: bold;
-        // text-align: center;
-        // margin: 10px;
+        font-size: 2.2rem;
     }
     img {
         max-width: 300px;
-        // min-height: 200px;
         margin: 10px auto;
-        // border-radius: 10px;
     }
 }
 </style>

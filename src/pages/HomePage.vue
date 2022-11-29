@@ -8,7 +8,7 @@
             <base-button @click="getRandomRecipe('')" mode="outlineLight">Something else</base-button>
         </div>
     </base-card>
-    <base-card v-if="store.state.randomRecipe.title" :title="store.state.randomRecipe.title" :image="store.state.randomRecipe.image" :summary="store.state.randomRecipe.summary" type="standard"></base-card>
+    <base-card v-if="store.state.randomRecipe.title" :title="store.state.randomRecipe.title" :image="store.state.randomRecipe.image" :summary="store.state.randomRecipe.summary" :id="store.state.randomRecipe.id" type="standard"></base-card>
 </main>
 </template>
 
@@ -21,7 +21,6 @@ function getRandomRecipe(tag) {
     type: 'random'
 });
 }
-if (store.state.randomRecipe.title.length === 0) getRandomRecipe('');
 </script>
 
 <style lang="scss" scoped>
