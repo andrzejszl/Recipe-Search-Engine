@@ -66,6 +66,16 @@ button:active {
   color: #1b827f;
 }
 
+.outlineLight {
+  border: 1px solid #222222;
+  background-color: transparent;
+  color: #1b827f;
+}
+.outlineLight:hover {
+  background-color: #222222;
+  color: #F3EFE0;
+}
+
 .flat:hover,
 .flat:active,
 .outline:hover,

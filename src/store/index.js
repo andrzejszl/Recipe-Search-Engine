@@ -8,6 +8,9 @@ export default createStore({
         title: '',
         image: '',
         summary: '',
+      },
+      searchedRecipes: {
+
       }
     }
   },
@@ -17,19 +20,52 @@ export default createStore({
 
   },
   actions: {
-    async getRandomRecipes(context, payload) {
-      const url ='https://api.spoonacular.com/recipes/random';
-      const api = '?apiKey=42f5299519244e28bfdda5914b136733';
- 
-      const response = await fetch(url + api + '&tags=' + payload.tags);
-      const responseData = await response.json();
-      const data = await responseData.recipes[0]
+    async getRecipes(context, payload) {
+      // const api = '?apiKey=42f5299519244e28bfdda5914b136733';
+      const api = '?apiKey=1f0c11959ff6405eb834f3da2290dcb5';
+      let url ='https://api.spoonacular.com/recipes/';
+      let type = payload.type
+      let fullUrl = url + type + api
 
-      context.state.randomRecipe.id = data.id;
-      context.state.randomRecipe.title = data.title;
-      context.state.randomRecipe.image = responseData.recipes[0].image;
-      context.state.randomRecipe.summary = responseData.recipes[0].summary;
-    }
+      //home page search
+      if (payload.tags) fullUrl += '&tags=' + payload.tags
+
+      //custom search
+      if (payload.diet) fullUrl += '&diet=' + payload.diet
+      if (payload.cuisine) fullUrl += '&cuisine=' + payload.cuisine
+
+      //query search
+      if (payload.query) fullUrl += '&query=' + payload.query
+      
+      
+      let response = await fetch(fullUrl);
+
+      const responseData = await response.json();
+      let dataContainer;
+
+      let data;
+      if (payload.type === 'random') {
+        data = await responseData.recipes[0];
+        dataContainer = context.state.randomRecipe
+      }
+      else if (payload.type === 'complexSearch') {
+        data = await responseData.results
+        dataContainer = context.state.searchedRecipes;
+      }
+      if (payload.type === 'random') {
+      dataContainer.id = data.id;
+      dataContainer.title = data.title;
+      dataContainer.image = data.image;
+        dataContainer.summary = data.summary;
+      } else if (payload.type === 'complexSearch') {
+        data.forEach((recipe, index) => {
+          dataContainer[index] = recipe
+        });
+      }
+
+      console.log(fullUrl);
+      console.log(context.state.searchedRecipes);
+    },
   },
   modules: {
   }

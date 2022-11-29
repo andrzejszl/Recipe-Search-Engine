@@ -5,10 +5,10 @@
         <div class="buttons">
             <base-button @click="getRandomRecipe('vegetarian')">Vegetarian</base-button>
             <base-button @click="getRandomRecipe('dessert')">Dessert</base-button>
-            <base-button @click="getRandomRecipe('')" mode="flat">Something else</base-button>
+            <base-button @click="getRandomRecipe('')" mode="outlineLight">Something else</base-button>
         </div>
     </base-card>
-    <base-card v-if="store.state.randomRecipe.title" :title="store.state.randomRecipe.title" :image="store.state.randomRecipe.image" :summary="store.state.randomRecipe.summary"></base-card>
+    <base-card v-if="store.state.randomRecipe.title" :title="store.state.randomRecipe.title" :image="store.state.randomRecipe.image" :summary="store.state.randomRecipe.summary" type="standard"></base-card>
 </main>
 </template>
 
@@ -16,8 +16,9 @@
 import { useStore } from 'vuex';
 const store = useStore()
 function getRandomRecipe(tag) {
-    store.dispatch('getRandomRecipes', {
+    store.dispatch('getRecipes', {
     tags: tag,
+    type: 'random'
 });
 }
 if (store.state.randomRecipe.title.length === 0) getRandomRecipe('');
@@ -37,12 +38,7 @@ main {
         .buttons {
             display: flex;
             button:last-child {
-                border: 1px solid #222222;
                 margin-left: auto;
-            }
-            button:last-child:hover {
-                background-color: #222222;
-                color: white;
             }
         }
     }
