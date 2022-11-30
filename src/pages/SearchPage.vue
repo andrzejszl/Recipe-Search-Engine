@@ -11,7 +11,7 @@
         <h2>Advanced Search</h2>
         <form action="submit" @submit.prevent="sendAdvancedRequest">
             <fieldset>
-                <legend>Diet:</legend>
+                <legend>Diet including:</legend>
                 <div>
                     <input type="checkbox" id="vegetarian" name="vegetarian" v-model="diets.vegetarian">
                     <label for="vegetarian">Vegetarian</label>
@@ -95,23 +95,29 @@ const diets = reactive({
 const cuisine = ref()
 
 function sendPhraseRequest() {
-    results.value.scrollIntoView({behavior: "smooth"});
     store.dispatch('getRecipes', {
-    query: searchPhrase.value,
-    type: 'complexSearch'
+        query: searchPhrase.value,
+        type: 'complexSearch'
     })
+    results.value.scrollIntoView({behavior: "smooth"});
 }
 function sendAdvancedRequest() {
-    results.value.scrollIntoView({behavior: "smooth"});
     let filteredDiet = ''
     for (let diet in diets) {
-        if (diets[diet] === true) filteredDiet += diet + ','
+        if (diets[diet] === true) {
+            if (filteredDiet.length === 0) {
+                filteredDiet += diet
+            } else {
+                filteredDiet += ',' + diet
+            }
+        }
     }
     store.dispatch('getRecipes', {
         type: 'complexSearch',
         diet: filteredDiet,
         cuisine: cuisine.value,
     })
+    results.value.scrollIntoView({behavior: "smooth"});
 }
 </script>
 
@@ -132,7 +138,6 @@ main {
     #search {
         width: 100%;
         font-size: 1.5rem;
-        // border-color: #166967;
         border: 1px solid #434242;
         &:focus-visible {
             outline: 3px solid #434242;

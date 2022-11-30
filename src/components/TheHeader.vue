@@ -6,7 +6,6 @@
             <li><base-button :mode="currPath === '/search' ? 'outline' : ''" link to="/search">Search</base-button></li>
         </ul>
         <base-button :mode="currPath === '/account' ? 'outline' : 'flat'" link to="/account">My account</base-button>
-        
     </header>
 </template>
 

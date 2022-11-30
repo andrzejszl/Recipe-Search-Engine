@@ -2,11 +2,6 @@
     <main>
         <base-card v-if="data">
             <h2>{{ data.title }}</h2>
-            <!-- <div class="tags">
-                <base-badge v-if="data.vegetarian" text="Vegetarian"></base-badge>
-                <base-badge v-if="data.vegan" text="Vegan"></base-badge>
-                <base-badge v-if="data.glutenFree" text="Gluten Free"></base-badge>
-            </div> -->
             <img :src="data.image" alt="dish photo">
             <div class="ratings">
                 <base-icon v-if="data.healthScore !== -1" text="Score" :value="`${data.healthScore}%`" icon="♕"></base-icon>
@@ -14,11 +9,11 @@
                 <base-icon v-if="data.pricePerServing !== -1" text="Price per serving" :value="`$${data.pricePerServing}`" icon="＄"></base-icon>
             </div>
             <p class="summary" v-html="data.summary"></p>
-            <div class="container">
+            <div class="container" v-if="data.cuisines.length > 0">
                 <span class="tag">Cuisine</span>
                 <base-badge v-for="cuisine in data.cuisines" :key="cuisine" :text="cuisine"></base-badge>
             </div>
-            <div class="container">
+            <div class="container" v-if="data.diets.length > 0">
                 <span class="tag">Diets</span>
                 <base-badge v-for="diet in data.diets" :key="diet" :text="diet"></base-badge>
             </div>
