@@ -69,7 +69,8 @@
         </form>
     </base-card>
     <base-card v-if="store.state.searchedRecipes.title" :title="store.state.searchedRecipes.title" :image="store.state.searchedRecipes.image" :summary="store.state.searchedRecipes.summary"></base-card>
-    <ul v-if="store.state.searchedRecipes" ref="results">
+    <div ref="results"></div>
+    <ul v-if="store.state.searchedRecipes[0]">
         <li><router-link :to="`/search/${recipe.id}`" v-for="recipe in store.state.searchedRecipes" :key="recipe.id"><base-card type="mini" :title="recipe.title" :image="recipe.image" :id="recipe.id"></base-card></router-link></li>
     </ul>
     
@@ -82,7 +83,6 @@ import { useStore } from 'vuex';
 const store = useStore()
 
 const searchPhrase = ref()
-const results = ref()
 
 const diets = reactive({
     vegetarian: false,
@@ -93,7 +93,7 @@ const diets = reactive({
     whole30: false,
 })
 const cuisine = ref()
-
+const results = ref()
 function sendPhraseRequest() {
     store.dispatch('getRecipes', {
         query: searchPhrase.value,
@@ -117,8 +117,16 @@ function sendAdvancedRequest() {
         diet: filteredDiet,
         cuisine: cuisine.value,
     })
+    console.log(results.value);
     results.value.scrollIntoView({behavior: "smooth"});
 }
+// function test() {
+//     console.log(results.value);
+//     setTimeout(() => {
+//         console.log(results.value);
+//     }, 300);
+// }
+// test()
 </script>
 
 <style lang="scss" scoped>
