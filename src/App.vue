@@ -1,14 +1,23 @@
 <template>
 <the-header></the-header>
 <router-view v-slot="slotProps">
-  <transition name="route" mode="out-in">
+  <transition :name="store.state.animationName" mode="out-in">
     <component :is="slotProps.Component"></component>
   </transition>
 </router-view>
 </template>
 
 <script setup>
+import { useStore } from 'vuex';
 import TheHeader from './components/TheHeader.vue';
+
+const store = useStore()
+function updateAnimationName() {
+  setTimeout(() => {
+    store.state.animationName = 'route'
+  }, 1); 
+}
+updateAnimationName()
 
 </script>
 

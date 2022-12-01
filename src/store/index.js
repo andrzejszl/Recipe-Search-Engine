@@ -13,6 +13,7 @@ export default createStore({
       storedRecipes: {},
       isLoading: false,
       error: null,
+      animationName: '',
     }
   },
   getters: {
