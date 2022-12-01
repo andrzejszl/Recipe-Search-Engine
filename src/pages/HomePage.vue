@@ -8,18 +8,28 @@
             <base-button @click="getRandomRecipe('')" mode="outlineLight">Something else</base-button>
         </div>
     </base-card>
-    <base-card v-if="store.state.randomRecipe.title" :title="store.state.randomRecipe.title" :image="store.state.randomRecipe.image" :summary="store.state.randomRecipe.summary" :id="store.state.randomRecipe.id" type="standard"></base-card>
+    <div v-if="store.state.isLoading">
+        <base-card>
+            <base-spinner></base-spinner>
+        </base-card>
+    </div>
+    <base-card v-if="store.state.randomRecipe.title && !store.state.isLoading" :title="store.state.randomRecipe.title" :image="store.state.randomRecipe.image" :summary="store.state.randomRecipe.summary" :id="store.state.randomRecipe.id" type="standard"></base-card>
+    <base-card v-else-if="requestedResults && !store.state.isLoading"><h2>No recipe found</h2></base-card>
 </main>
 </template>
 
 <script setup>
 import { useStore } from 'vuex';
+let requestedResults = false;
 const store = useStore()
-function getRandomRecipe(tag) {
-    store.dispatch('getRecipes', {
-    tags: tag,
-    type: 'random'
-});
+async function getRandomRecipe(tag) {
+    store.state.isLoading = true
+    requestedResults = true
+    await store.dispatch('getRecipes', {
+        tags: tag,
+        type: 'random'
+    });
+    store.state.isLoading = false
 }
 </script>
 

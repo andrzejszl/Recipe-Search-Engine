@@ -1,6 +1,11 @@
 <template>
     <main>
-        <base-card v-if="data">
+        <div v-if="store.state.isLoading">
+            <base-card>
+                <base-spinner></base-spinner>
+            </base-card>
+        </div>
+        <base-card v-if="data && !store.state.isLoading">
             <h2>{{ data.title }}</h2>
             <img :src="data.image" alt="dish photo">
             <div class="ratings">
@@ -18,6 +23,7 @@
                 <base-badge v-for="diet in data.diets" :key="diet" :text="diet"></base-badge>
             </div>
         </base-card>
+        <base-card v-else-if="requestedResults && !store.state.isLoading"><h2>No recipe detials found</h2></base-card>
     </main>
 </template>
 
@@ -25,6 +31,7 @@
 import { computed } from 'vue';
 import { useStore } from 'vuex';
 
+let requestedResults = false;
 const store = useStore()
 // eslint-disable-next-line
 const props = defineProps({
@@ -34,10 +41,16 @@ const data = computed(()=> {
     return store.state.storedRecipes[props.id]
 })
 
-function getDetails() {
+async function getDetails() {
+    store.state.isLoading = true
+    requestedResults = true
     //dont request recipe info if already stored locally
-    if (store.state.storedRecipes[props.id]) return;
-    store.dispatch('getRecipeInfo', {id:props.id})
+    if (store.state.storedRecipes[props.id]) {
+        store.state.isLoading = false
+        return
+    }
+    await store.dispatch('getRecipeInfo', {id:props.id})
+    store.state.isLoading = false
 }
 getDetails()
 </script>

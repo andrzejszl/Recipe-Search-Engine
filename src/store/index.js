@@ -11,6 +11,7 @@ export default createStore({
       },
       searchedRecipes: {},
       storedRecipes: {},
+      isLoading: false,
     }
   },
   getters: {
@@ -41,6 +42,12 @@ export default createStore({
       let response = await fetch(fullUrl);
 
       const responseData = await response.json();
+
+      if (!response.ok) {
+        const error = new Error(responseData.message || 'Failed to fetch data!');
+        throw error
+      }
+
       let dataContainer;
 
       let data;

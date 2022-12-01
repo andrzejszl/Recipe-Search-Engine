@@ -68,18 +68,22 @@
             <base-button mode="outlineLight">Search</base-button>
         </form>
     </base-card>
-    <base-card v-if="store.state.searchedRecipes.title" :title="store.state.searchedRecipes.title" :image="store.state.searchedRecipes.image" :summary="store.state.searchedRecipes.summary"></base-card>
-    <div ref="results"></div>
-    <ul v-if="store.state.searchedRecipes[0]">
+    <div v-if="store.state.isLoading">
+        <base-card>
+            <base-spinner></base-spinner>
+        </base-card>
+    </div>
+    <ul v-if="store.state.searchedRecipes[0] && !store.state.isLoading">
         <li><router-link :to="`/search/${recipe.id}`" v-for="recipe in store.state.searchedRecipes" :key="recipe.id"><base-card type="mini" :title="recipe.title" :image="recipe.image" :id="recipe.id"></base-card></router-link></li>
     </ul>
-    
+    <base-card v-else-if="requestedResults && !store.state.isLoading"><h2>No recipes found</h2></base-card>
 </main>
 </template>
 
 <script setup>
 import { reactive, ref } from 'vue';
 import { useStore } from 'vuex';
+let requestedResults = false;
 const store = useStore()
 
 const searchPhrase = ref()
@@ -93,15 +97,18 @@ const diets = reactive({
     whole30: false,
 })
 const cuisine = ref()
-const results = ref()
-function sendPhraseRequest() {
-    store.dispatch('getRecipes', {
+async function sendPhraseRequest() {
+    store.state.isLoading = true
+    requestedResults = true
+    await store.dispatch('getRecipes', {
         query: searchPhrase.value,
         type: 'complexSearch'
     })
-    results.value.scrollIntoView({behavior: "smooth"});
+    store.state.isLoading = false
 }
-function sendAdvancedRequest() {
+async function sendAdvancedRequest() {
+    store.state.isLoading = true
+    requestedResults = true
     let filteredDiet = ''
     for (let diet in diets) {
         if (diets[diet] === true) {
@@ -112,21 +119,13 @@ function sendAdvancedRequest() {
             }
         }
     }
-    store.dispatch('getRecipes', {
+    await store.dispatch('getRecipes', {
         type: 'complexSearch',
         diet: filteredDiet,
         cuisine: cuisine.value,
     })
-    console.log(results.value);
-    results.value.scrollIntoView({behavior: "smooth"});
+    store.state.isLoading = false
 }
-// function test() {
-//     console.log(results.value);
-//     setTimeout(() => {
-//         console.log(results.value);
-//     }, 300);
-// }
-// test()
 </script>
 
 <style lang="scss" scoped>
