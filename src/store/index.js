@@ -12,6 +12,7 @@ export default createStore({
       searchedRecipes: {},
       storedRecipes: {},
       isLoading: false,
+      error: null,
     }
   },
   getters: {
@@ -69,9 +70,6 @@ export default createStore({
           dataContainer[index] = recipe
         });
       }
-
-      console.log(fullUrl);
-      console.log(context.state.searchedRecipes);
     },
     async getRecipeInfo(context, payload) {
       const api = '?apiKey=42f5299519244e28bfdda5914b136733';
@@ -82,12 +80,15 @@ export default createStore({
       let response = await fetch(url + api);
 
       const responseData = await response.json();
+
+      if (!response.ok) {
+        const error = new Error(responseData.message || 'Failed to fetch data!');
+        throw error
+      }
+
       let data = await responseData;
-    
-      console.log(data.id)
-      // console.log(fullUrl);
+
       context.state.storedRecipes[data.id] = data;
-      console.log(context.state.storedRecipes)
     },
   },
   modules: {

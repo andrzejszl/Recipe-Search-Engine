@@ -1,21 +1,24 @@
 <template>
-<main>
-    <base-card>
-        <h2>I'm feeling lucky! <br>Let's try some random food.</h2>
-        <div class="buttons">
-            <base-button @click="getRandomRecipe('vegetarian')">Vegetarian</base-button>
-            <base-button @click="getRandomRecipe('dessert')">Dessert</base-button>
-            <base-button @click="getRandomRecipe('')" mode="outlineLight">Something else</base-button>
-        </div>
-    </base-card>
-    <div v-if="store.state.isLoading">
+    <main>
+        <base-dialog :show="!!store.state.error" title="An error occured!" @close="store.state.error=null">
+            <p class="error-text">{{ store.state.error }}</p>
+        </base-dialog>
         <base-card>
-            <base-spinner></base-spinner>
+            <h2>I'm feeling lucky! <br>Let's try some random food.</h2>
+            <div class="buttons">
+                <base-button @click="getRandomRecipe('vegetarian')">Vegetarian</base-button>
+                <base-button @click="getRandomRecipe('dessert')">Dessert</base-button>
+                <base-button @click="getRandomRecipe('')" mode="outlineLight">Something else</base-button>
+            </div>
         </base-card>
-    </div>
-    <base-card v-if="store.state.randomRecipe.title && !store.state.isLoading" :title="store.state.randomRecipe.title" :image="store.state.randomRecipe.image" :summary="store.state.randomRecipe.summary" :id="store.state.randomRecipe.id" type="standard"></base-card>
-    <base-card v-else-if="requestedResults && !store.state.isLoading"><h2>No recipe found</h2></base-card>
-</main>
+        <div v-if="store.state.isLoading">
+            <base-card>
+                <base-spinner></base-spinner>
+            </base-card>
+        </div>
+        <base-card v-if="store.state.randomRecipe.title && !store.state.isLoading" :title="store.state.randomRecipe.title" :image="store.state.randomRecipe.image" :summary="store.state.randomRecipe.summary" :id="store.state.randomRecipe.id" type="standard"></base-card>
+        <base-card v-else-if="requestedResults && !store.state.isLoading"><h2>No recipe found</h2></base-card>
+    </main>
 </template>
 
 <script setup>
@@ -25,10 +28,14 @@ const store = useStore()
 async function getRandomRecipe(tag) {
     store.state.isLoading = true
     requestedResults = true
-    await store.dispatch('getRecipes', {
-        tags: tag,
-        type: 'random'
-    });
+    try {
+        await store.dispatch('getRecipes', {
+            tags: tag,
+            type: 'random'
+        });
+    } catch (error) {
+        store.state.error = error.message || 'Something went wrong!'
+    }
     store.state.isLoading = false
 }
 </script>
@@ -51,5 +58,9 @@ main {
             }
         }
     }
+}
+.error-text {
+    font-size: 1.4rem;
+    font-family: 'Roboto', sans-serif;
 }
 </style>

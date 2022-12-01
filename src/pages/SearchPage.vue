@@ -1,5 +1,8 @@
 <template>
 <main>
+    <base-dialog :show="!!store.state.error" title="An error occured!" @close="store.state.error=null">
+            <p class="error-text">{{ store.state.error }}</p>
+    </base-dialog>
     <base-card>
         <form action="submit" @submit.prevent="sendPhraseRequest">
             <h2>Phrase Search</h2>
@@ -100,10 +103,14 @@ const cuisine = ref()
 async function sendPhraseRequest() {
     store.state.isLoading = true
     requestedResults = true
-    await store.dispatch('getRecipes', {
-        query: searchPhrase.value,
-        type: 'complexSearch'
-    })
+    try {
+        await store.dispatch('getRecipes', {
+            query: searchPhrase.value,
+            type: 'complexSearch'
+        })
+    } catch (error) {
+        store.state.error = error.message || 'Something went wrong!'
+    }
     store.state.isLoading = false
 }
 async function sendAdvancedRequest() {
@@ -119,11 +126,15 @@ async function sendAdvancedRequest() {
             }
         }
     }
-    await store.dispatch('getRecipes', {
-        type: 'complexSearch',
-        diet: filteredDiet,
-        cuisine: cuisine.value,
-    })
+    try {
+        await store.dispatch('getRecipes', {
+            type: 'complexSearch',
+            diet: filteredDiet,
+            cuisine: cuisine.value,
+        })
+    } catch(error) {
+        store.state.error = error.message || 'Something went wrong!'
+    }
     store.state.isLoading = false
 }
 </script>
@@ -194,5 +205,9 @@ main {
             }
         }
     }
+}
+.error-text {
+    font-size: 1.4rem;
+    font-family: 'Roboto', sans-serif;
 }
 </style>

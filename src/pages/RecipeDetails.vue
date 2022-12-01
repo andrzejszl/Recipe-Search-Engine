@@ -1,5 +1,8 @@
 <template>
     <main>
+        <base-dialog :show="!!store.state.error" title="An error occured!" @close="store.state.error=null">
+            <p class="error-text">{{ store.state.error }}</p>
+        </base-dialog>
         <div v-if="store.state.isLoading">
             <base-card>
                 <base-spinner></base-spinner>
@@ -49,7 +52,11 @@ async function getDetails() {
         store.state.isLoading = false
         return
     }
-    await store.dispatch('getRecipeInfo', {id:props.id})
+    try {
+        await store.dispatch('getRecipeInfo', {id:props.id})
+    } catch (error) {
+        store.state.error = error.message || 'Something went wrong!'
+    }
     store.state.isLoading = false
 }
 getDetails()
@@ -90,5 +97,9 @@ main {
             }
         }
     }
+}
+.error-text {
+    font-size: 1.4rem;
+    font-family: 'Roboto', sans-serif;
 }
 </style>

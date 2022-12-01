@@ -8,6 +8,7 @@ import BaseCard from './ui/BaseCard.vue'
 import BaseBadge from './ui/BaseBadge.vue'
 import BaseIcon from './ui/BaseIcon.vue'
 import BaseSpinner from './ui/BaseSpinner.vue'
+import BaseDialog from './ui/BaseDialog.vue'
 
 const app = createApp(App)
 app.use(store)
@@ -18,5 +19,6 @@ app.component('base-card', BaseCard)
 app.component('base-badge', BaseBadge)
 app.component('base-icon', BaseIcon)
 app.component('base-spinner', BaseSpinner)
+app.component('base-dialog', BaseDialog)
 
 app.mount('#app')
