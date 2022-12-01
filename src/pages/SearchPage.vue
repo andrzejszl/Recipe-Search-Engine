@@ -76,15 +76,17 @@
             <base-spinner></base-spinner>
         </base-card>
     </div>
+    <transition name="result" mode="out-in">
     <ul v-if="store.state.searchedRecipes[0] && !store.state.isLoading">
-        <li><router-link :to="`/search/${recipe.id}`" v-for="recipe in store.state.searchedRecipes" :key="recipe.id"><base-card type="mini" :title="recipe.title" :image="recipe.image" :id="recipe.id"></base-card></router-link></li>
-    </ul>
-    <base-card v-else-if="requestedResults && !store.state.isLoading"><h2>No recipes found</h2></base-card>
+            <li><router-link :to="`/search/${recipe.id}`" v-for="recipe in store.state.searchedRecipes" :key="recipe.id"><base-card type="mini" :title="recipe.title" :image="recipe.image" :id="recipe.id"></base-card></router-link></li>
+        </ul>
+        <base-card v-else-if="requestedResults && !store.state.isLoading"><h2>No recipes found</h2></base-card>
+    </transition>
 </main>
 </template>
 
 <script setup>
-import { reactive, ref } from 'vue';
+import { onUpdated, reactive, ref } from 'vue';
 import { useStore } from 'vuex';
 let requestedResults = false;
 const store = useStore()
@@ -137,6 +139,13 @@ async function sendAdvancedRequest() {
     }
     store.state.isLoading = false
 }
+
+onUpdated(()=> {
+    window.scrollTo({
+    top: 854,
+    behavior: 'smooth'
+});
+})
 </script>
 
 <style lang="scss" scoped>
@@ -209,5 +218,20 @@ main {
 .error-text {
     font-size: 1.4rem;
     font-family: 'Roboto', sans-serif;
+}
+.result-enter-from {
+    transform: translate(0, 100%);
+}
+.result-leave-to {
+  transform: translate(100%, 0);
+}
+.result-enter-active {
+  transition: transform .6s ease-out;
+}
+.result-leave-active {
+  transition: transform .8s ease-in;
+}
+.result-enter-to, .result-leave-from {
+  transform: translate(0, 0);
 }
 </style>

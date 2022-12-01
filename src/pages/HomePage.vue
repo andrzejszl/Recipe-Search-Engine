@@ -16,8 +16,10 @@
                 <base-spinner></base-spinner>
             </base-card>
         </div>
-        <base-card v-if="store.state.randomRecipe.title && !store.state.isLoading" :title="store.state.randomRecipe.title" :image="store.state.randomRecipe.image" :summary="store.state.randomRecipe.summary" :id="store.state.randomRecipe.id" type="standard"></base-card>
-        <base-card v-else-if="requestedResults && !store.state.isLoading"><h2>No recipe found</h2></base-card>
+        <transition name="result" mode="out-in">
+            <base-card v-if="store.state.randomRecipe.title && !store.state.isLoading" :title="store.state.randomRecipe.title" :image="store.state.randomRecipe.image" :summary="store.state.randomRecipe.summary" :id="store.state.randomRecipe.id" type="standard"></base-card>
+            <base-card v-else-if="requestedResults && !store.state.isLoading"><h2>No recipe found</h2></base-card>
+        </transition>
     </main>
 </template>
 
@@ -62,5 +64,19 @@ main {
 .error-text {
     font-size: 1.4rem;
     font-family: 'Roboto', sans-serif;
+}
+
+.result-enter-from,
+.result-leave-to {
+  transform: translateY(100%);
+}
+.result-enter-active {
+  transition: transform .3s ease-out;
+}
+.result-leave-active {
+  transition: transform .3s ease-in;
+}
+.result-enter-to, .result-leave-from {
+  transform: translateY(0);
 }
 </style>
