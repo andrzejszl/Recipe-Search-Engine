@@ -54,8 +54,11 @@ const props = defineProps({
         font-size: 1.2rem;
         padding: 20px;
         :-webkit-any-link {
-            color: #22A39F;
-        }
+                cursor: default;
+                color: black;
+                font-family: 'Roboto', sans-serif;
+                text-decoration: none;
+            }
     }
 }
 
