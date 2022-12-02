@@ -29,7 +29,7 @@
             </base-card>
             <base-card>
                 <h2>Ingredients list:</h2>
-                    <div class="ingredients">
+                    <div class="ingredients" id="ingredientsList">
                         <div class="ingredient-container" v-for="ingredient in data.extendedIngredients" :key="ingredient">
                             <img :src="`https://spoonacular.com/cdn/ingredients_100x100/${ingredient.image}`" v-if="ingredient.image" :alt="ingredient.name">
                             <img src="https://spoonacular.com/cdn/ingredients_100x100/no.jpg" v-else :alt="ingredient.name">
@@ -61,11 +61,12 @@
             </base-card>
         </div>
         <base-card v-else-if="requestedResults && !store.state.isLoading"><h2>No recipe detials found</h2></base-card>
+        <div @click="scrollUp" id="up" v-if="isScrollVisible"><span>&#8679;</span></div>
     </main>
 </template>
 
 <script setup>
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { useStore } from 'vuex';
 
 let requestedResults = false;
@@ -77,6 +78,17 @@ const props = defineProps({
 const data = computed(()=> {
     return store.state.storedRecipes[props.id]
 })
+
+const isScrollVisible = ref(false)
+document.addEventListener('scroll', ()=> {
+    if (!document.getElementById('ingredientsList')) return
+    const list = document.getElementById('ingredientsList')
+    if (window.scrollY > list.offsetTop) isScrollVisible.value = true
+    if (window.scrollY < list.offsetTop) isScrollVisible.value = false
+})
+function scrollUp() {
+    window.scrollTo({top: 0, behavior: 'smooth'})
+}
 
 async function getDetails() {
     store.state.isLoading = true
@@ -160,6 +172,7 @@ main {
             margin: 3px;
             img {
                 max-width: 100px;
+                max-height: 100px;
             }
             .amount {
                 display: flex;
@@ -186,6 +199,7 @@ main {
             border-radius: 10px;
             padding: 10px;
             margin-bottom: 10px;
+            font-size: 1.2rem;
             .number {
                 font-family: 'Nerko One', cursive;
                 font-size: 2rem;
@@ -196,5 +210,29 @@ main {
 .error-text {
     font-size: 1.4rem;
     font-family: 'Roboto', sans-serif;
+}
+#up {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    width: 75px;
+    height: 75px;
+    background-color: #22A39F;
+    border-radius: 50%;
+    span {
+        transition: transform .2s ease-in-out;
+        font-size: 3rem;
+        color: #F3EFE0;
+    }
+    &:hover {
+        box-shadow: 0 0 10px 5px #222;
+        span {
+            transform: translateY(-15px);
+        }
+    }
 }
 </style>
